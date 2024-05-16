@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Produtos do GTA FIVEM - Egito</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #fdf6e3;
+            font-family: 'EB Garamond', serif;
+            color: #5a4a1c;
+        }
+
+        h1, h2 {
+            color: #d4af37;
+            font-weight: 700;
+        }
+
+        .container {
+            border: 2px solid #d4af37;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #fff8e1;
+        }
+
+        .form-group label, .product label {
+            color: #5a4a1c;
+            font-weight: 700;
+        }
+
+        .form-control {
+            border: 2px solid #d4af37;
+            background-color: #fff8e1;
+            color: #5a4a1c;
+        }
+
+        #product-list .product {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        #product-list .product label {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+        #product-list .product input {
+            flex: 0 0 150px;
+            margin-right: 10px;
+        }
+
+        #product-list .product .form-control {
+            width: 100%;
+        }
+
+        hr {
+            border-top: 2px solid #d4af37;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Lista de Produtos - Egito</h1>
+        <div class="form-group">
+            <label for="partnership">Tipo de Compra</label>
+            <select id="partnership" class="form-control">
+                <option value="no">Sem Parceria</option>
+                <option value="yes">Com Parceria</option>
+            </select>
+        </div>
+        <div id="product-list" class="mb-4">
+            <!-- Produtos serão adicionados aqui -->
+        </div>
+        <hr>
+        <h2>Total: R$ <span id="total-price">0.00</span></h2>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const productList = document.getElementById('product-list');
+            const totalPriceElement = document.getElementById('total-price');
+            const partnershipSelect = document.getElementById('partnership');
+
+            const products = [
+        { name: 'FiveSeven', priceNoPartnership: 400, pricePartnership: 350 },
+        { name: 'Tec-9', priceNoPartnership: 500, pricePartnership: 450 },
+        { name: 'Mtar-21', priceNoPartnership: 600, pricePartnership: 500 },
+        { name: 'Micro-Uzi', priceNoPartnership: 600, pricePartnership: 400 },
+        { name: 'Mini-Draco', priceNoPartnership: 700, pricePartnership: 550 },
+        { name: 'AK-103', priceNoPartnership: 800, pricePartnership: 700 },
+        { name: 'G36', priceNoPartnership: 900, pricePartnership: 850 },
+        { name: 'M16', priceNoPartnership: 1000, pricePartnership: 950 }
+
+    ];
+
+            function createProductElement(product, index) {
+                const productElement = document.createElement('div');
+                productElement.className = 'product';
+
+                const nameLabel = document.createElement('label');
+                nameLabel.innerText = product.name;
+                nameLabel.className = 'mr-3';
+
+                const quantityInput = document.createElement('input');
+                quantityInput.type = 'number';
+                quantityInput.className = 'form-control';
+                quantityInput.min = 0;
+                quantityInput.value = 0;
+                quantityInput.dataset.index = index;
+
+                quantityInput.addEventListener('input', calculateTotal);
+
+                productElement.appendChild(nameLabel);
+                productElement.appendChild(quantityInput);
+                productList.appendChild(productElement);
+            }
+
+            function calculateTotal() {
+                let total = 0;
+                const isPartnership = partnershipSelect.value === 'yes';
+
+                document.querySelectorAll('#product-list .product input').forEach(input => {
+                    const index = input.dataset.index;
+                    const quantity = parseInt(input.value, 10) || 0;
+                    const product = products[index];
+
+                    const price = isPartnership ? product.pricePartnership : product.priceNoPartnership;
+                    total += price * quantity;
+                });
+
+                totalPriceElement.innerText = total.toFixed(2);
+            }
+
+            products.forEach(createProductElement);
+
+            partnershipSelect.addEventListener('change', calculateTotal);
+        });
+    </script>
+</body>
+</html>
