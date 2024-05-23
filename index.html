@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EGITO (AR4) - gtarp</title>
+    <title>CALCULADORA GTA RP - EGITO</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;700&display=swap" rel="stylesheet">
     <style>
@@ -68,13 +68,49 @@
         hr {
             border-top: 1px solid #ffffff;
         }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 400px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover, .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
     <div class="container mt-5">
-        <h1 class="text-center">EGITO</h1>
+        <h1 class="text-center">MUNIÇÃO - EGITO</h1>
         <div class="form-group">
-            <label for="partnership">TIPO DE VENDA</label>
+            <label for="partnership">TIPO DE COMPRA</label>
             <select id="partnership" class="form-control">
                 <option value="no">SEM PARCERIA</option>
                 <option value="yes">COM PARCERIA</option>
@@ -85,6 +121,29 @@
         </div>
         <hr>
         <h2>TOTAL: R$ <span id="total-price">0.00</span></h2>
+        <button id="register-sale" class="btn btn-primary">Registrar Venda</button>
+    </div>
+
+    <!-- The Modal -->
+    <div id="saleModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <form id="sale-form">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="client">Cliente</label>
+                    <input type="text" id="client" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Registrar</button>
+            </form>
+        </div>
     </div>
 
     <script>
@@ -92,18 +151,27 @@
             const productList = document.getElementById('product-list');
             const totalPriceElement = document.getElementById('total-price');
             const partnershipSelect = document.getElementById('partnership');
+            const registerSaleButton = document.getElementById('register-sale');
+            const modal = document.getElementById('saleModal');
+            const span = document.getElementsByClassName('close')[0];
+            const saleForm = document.getElementById('sale-form');
 
             const products = [
-        { name: 'FIVE7', priceNoPartnership: 60000, pricePartnership: 50000 },
-        { name: 'TEC9', priceNoPartnership: 90000, pricePartnership: 75000 },
-        { name: 'MTAR', priceNoPartnership: 150000, pricePartnership: 120000 },
-        { name: 'UZI', priceNoPartnership: 160000, pricePartnership: 130000 },
-        { name: 'MINI-DRACO', priceNoPartnership: 180000, pricePartnership: 140000 },
-        { name: 'AK', priceNoPartnership: 200000, pricePartnership: 160000 },
-        { name: 'G36', priceNoPartnership: 220000, pricePartnership: 180000 },
-        { name: 'M16', priceNoPartnership: 240000, pricePartnership: 200000 }
+                { name: 'FIVE7', priceNoPartnership: 400, pricePartnership: 350 },
+                { name: 'TEC9', priceNoPartnership: 500, pricePartnership: 450 },
+                { name: 'MTAR', priceNoPartnership: 600, pricePartnership: 500 },
+                { name: 'UZI', priceNoPartnership: 600, pricePartnership: 400 },
+                { name: 'MINI-DRACO', priceNoPartnership: 700, pricePartnership: 550 },
+                { name: 'AK', priceNoPartnership: 800, pricePartnership: 700 },
+                { name: 'G36', priceNoPartnership: 900, pricePartnership: 850 },
+                { name: 'M16', priceNoPartnership: 1000, pricePartnership: 950 }
+            ];
 
-    ];
+            const authorizedUsers = [
+                { username: 'ianca', password: '12345' },
+                { username: 'user2', password: 'password2' }
+                // Adicione mais usuários conforme necessário
+            ];
 
             function createProductElement(product, index) {
                 const productElement = document.createElement('div');
@@ -146,6 +214,70 @@
             products.forEach(createProductElement);
 
             partnershipSelect.addEventListener('change', calculateTotal);
+
+            // Modal functionality
+            registerSaleButton.onclick = function() {
+                modal.style.display = 'flex';
+            }
+
+            span.onclick = function() {
+                modal.style.display = 'none';
+            }
+
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = 'none';
+                }
+            }
+
+            saleForm.onsubmit = async function(event) {
+                event.preventDefault();
+
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+                const client = document.getElementById('client').value;
+
+                // Validate the username and password
+                const user = authorizedUsers.find(user => user.username === username && user.password === password);
+                if (!user) {
+                    alert('Username ou Password inválido.');
+                    return;
+                }
+
+                // Collect sale data
+                const saleData = {
+                    username,
+                    client,
+                    total: totalPriceElement.innerText,
+                    products: Array.from(document.querySelectorAll('#product-list .product input')).map(input => ({
+                        name: products[input.dataset.index].name,
+                        quantity: input.value
+                    })).filter(product => product.quantity > 0)
+                };
+
+                // Send data to Discord webhook
+                try {
+                    const response = await fetch('https://discord.com/api/webhooks/1224466898142630088/iirtDBOI1CIKas7AGCnr1iDecXuH19z3pYTPiLnLfnsUn_eG2GRNunydzQWdqKh62eTM', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            content: `Venda registrada:\nUsuário: ${saleData.username}\nCliente: ${saleData.client}\nTotal: R$ ${saleData.total}\nProdutos: ${saleData.products.map(p => `${p.name} x${p.quantity}`).join(', ')}`
+                        })
+                    });
+
+                    if (response.ok) {
+                        alert('Venda registrada com sucesso!');
+                        modal.style.display = 'none';
+                    } else {
+                        alert('Falha ao registrar venda.');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Erro ao registrar venda.');
+                }
+            }
         });
     </script>
 </body>
