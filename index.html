@@ -263,7 +263,7 @@
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify({
-                            content: `Venda registrada:\nUsuário: ${saleData.username}\nCliente: ${saleData.client}\nTotal: R$ ${saleData.total}\nProdutos: ${saleData.products.map(p => `${p.name} x${p.quantity}`).join(', ')}`
+                            content: `VENDA REGISTRADA\nUsuário: ${saleData.username}\nCliente: ${saleData.client}\nTotal: R$ ${saleData.total}\nProdutos: ${saleData.products.map(p => `${p.name} x${p.quantity}`).join(', ')}`
                         })
                     });
 
